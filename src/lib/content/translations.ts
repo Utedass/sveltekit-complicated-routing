@@ -1,13 +1,36 @@
-
 export const siteContent = {
     sv: {
+        start: {
+            title: "Startsidan"
+        },
         about: {
             title: "Om den här siten"
+        },
+        contact: {
+            title: "Kontakta oss"
+        },
+        knowledgeBank: {
+            title: "Samlad kunskap"
+        },
+        error: {
+            404: "Kunde inte hitta"
         }
     },
     en: {
+        start: {
+            title: "Home"
+        },
         about: {
             title: "About this site"
+        },
+        contact: {
+            title: "Contact us"
+        },
+        knowledgeBank: {
+            title: "Knowledge base"
+        },
+        error: {
+            404: "Could not find"
         }
     }
 }
@@ -51,7 +74,7 @@ export const menuContent = {
             },
             contact: {
                 text: "Contact",
-                path: "/contakt"
+                path: "/contact"
             }
         }
     }

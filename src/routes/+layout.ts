@@ -1,6 +1,6 @@
 import type { LayoutLoad } from './$types';
 import { type Locale, defaultLocale, isLocale, currentLocale } from '$lib/locale/index.svelte';
-import { pagesReverseLookup } from '$lib/content/routing'
+import { currentPath, pagesReverseLookup } from '$lib/content/routing.svelte'
 import { redirect } from '@sveltejs/kit';
 
 export const load: LayoutLoad = (event) => {
@@ -25,17 +25,17 @@ export const load: LayoutLoad = (event) => {
 	currentLocale.locale = locale;
 
 	// Reconstruct the path back into a valid pathname starting with a /
-	const page = '/' + pageParts.join('/');
+	currentPath.path = '/' + pageParts.join('/');
 
 	let correctPage;
 	let isCorrectPage = false;
 
-	console.log(page);
+	console.log(currentPath.path);
 
 	// If the page path is registered
-	if (page in pagesReverseLookup) {
+	if (currentPath.path in pagesReverseLookup) {
 		// Recreate the correct pathname based on the selected locale
-		correctPage = (locale == defaultLocale ? '' : `/${locale}`) + pagesReverseLookup[page].routes[locale];
+		correctPage = (locale == defaultLocale ? '' : `/${locale}`) + pagesReverseLookup[currentPath.path].routes[locale];
 		// Remove trailing slashes if any, except the last one
 		correctPage = correctPage.replace(/\/+$/, '') || '/';
 		isCorrectPage = event.url.pathname === correctPage;
@@ -55,7 +55,7 @@ export const load: LayoutLoad = (event) => {
 	return {
 		paramLang: event.params.lang,
 		locale,
-		page,
+		page: currentPath.path,
 		correctPage,
 		isCorrectPage
 	};
