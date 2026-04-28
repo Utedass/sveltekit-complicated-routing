@@ -1,7 +1,18 @@
 <script lang="ts">
     import { currentPath, getLocalizedLink } from "$lib/content/routing.svelte";
-    import { currentLocale } from "$lib/locale/index.svelte";
-    import { menuContent, headerMenusIndexes } from "../content/translations";
+    import {
+        menuContent,
+        headerMenusIndexes,
+        currentLocale
+    } from "../content/translations.svelte";
+    import { pushState, goto, replaceState } from '$app/navigation'
+
+    function cycleLanguage() {
+        if (currentLocale.locale === "sv") currentLocale.locale = "en";
+        else currentLocale.locale = "sv";
+        console.log("Resolving to: ", getLocalizedLink(currentPath.path))
+        pushState(getLocalizedLink(currentPath.path), {dummy: true});
+    }
 </script>
 
 <div class="header">
@@ -22,12 +33,9 @@
         </a>
     </div>
     <div class="header-item">
-        <a href={getLocalizedLink(currentPath.path, "sv")}>Sv</a>
+        <button onclick={cycleLanguage}>Switch!</button>
     </div>
-    <div class="header-item">
-        <a href={getLocalizedLink(currentPath.path, "en")}>En</a>
-    </div>
-</div>  
+</div>
 <hr />
 
 <style>

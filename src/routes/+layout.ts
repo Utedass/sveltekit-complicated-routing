@@ -1,8 +1,7 @@
 import type { LayoutLoad } from './$types';
-import { defaultLocale } from '$lib/locale/index.svelte';
-import { currentPath, getLocaleAndPathFromPathname, getLocalizedLink, pagesReverseLookup } from '$lib/content/routing.svelte'
+import { currentPath, getLocaleAndPathFromPathname, getLocalizedLink } from '$lib/content/routing.svelte'
 import { redirect } from '@sveltejs/kit';
-import { currentLocale } from '$lib/locale/index.svelte';
+import { currentLocale } from '$lib/content/translations.svelte';
 
 export const load: LayoutLoad = (event) => {
 

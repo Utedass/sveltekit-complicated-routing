@@ -1,4 +1,5 @@
-import { currentLocale, defaultLocale, isLocale, type Locale, locales } from "$lib/locale/index.svelte";
+import { currentLocale, defaultLocale, isLocale, type Locale, locales } from "$lib/content/translations.svelte";
+import { pushState } from "$app/navigation";
 
 interface Page {
     routes: Record<Locale, string>
@@ -97,4 +98,11 @@ export function getLocaleAndPathFromPathname(pathname: string): { locale: Locale
     const path = '/' + pageParts.join('/');
 
     return { locale, path };
+}
+
+export function changeLocale(locale: Locale)
+{
+        currentLocale.locale = locale;
+        console.log("Resolving to: ", getLocalizedLink(currentPath.path))
+        pushState(getLocalizedLink(currentPath.path));
 }
