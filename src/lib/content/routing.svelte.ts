@@ -1,8 +1,8 @@
-import { currentLocale, defaultLocale, type Locale, locales } from "$lib/locale/index.svelte";
-import { error } from "@sveltejs/kit";
+import { currentLocale, defaultLocale, isLocale, type Locale, locales } from "$lib/locale/index.svelte";
 
 interface Page {
     routes: Record<Locale, string>
+    path: string
 }
 
 export const currentPath = $state({ path: '/' })
@@ -13,27 +13,36 @@ export const pages = {
         routes: {
             en: '/',
             sv: '/'
-        }
+        },
+        path: "/"
     },
     knowledgeBank: {
         routes: {
             en: '/knowledge-bank',
             sv: '/kunskapsbank'
-        }
+        },
+        path: "/knowledge-bank"
     },
     about: {
         routes: {
             en: '/about',
             sv: '/om'
-        }
+        },
+        path: "/about"
     },
     contact: {
         routes: {
             en: '/contact',
             sv: '/kontakt'
-        }
+        },
+        path: "/contact"
     }
 } satisfies Record<string, Page>;
+
+// Symlinks because why not?
+export const symlinks = {
+    "/hemlis": "/din.mamma"
+} satisfies Record<string, string>
 
 // Create reverse-lookup from page-path -> page-object
 export const pagesReverseLookup = Object.values(pages).reduce((acc, page) => {
@@ -44,20 +53,48 @@ export const pagesReverseLookup = Object.values(pages).reduce((acc, page) => {
 }, {} as Record<string, Page>);
 
 
-export function getLocalizedLink(path: string, inLocale: Locale = currentLocale.locale): string {
-    let correctPage = "page-not-found";
+export function getLocalizedLink(pathname: string, inLocale: Locale = currentLocale.locale): string {
+    let localizedPath;
 
-    if (path in pagesReverseLookup) {
-        correctPage = (inLocale == defaultLocale ? '' : `/${inLocale}`) + pagesReverseLookup[path].routes[inLocale];
+    // Translate the path if it is registered
+    if (pathname in pagesReverseLookup) {
+        localizedPath = (inLocale == defaultLocale ? '' : `/${inLocale}`) + pagesReverseLookup[pathname].routes[inLocale];
         // Remove trailing slashes if any, except the last one
-        correctPage = correctPage.replace(/\/+$/, '') || '/';
+        localizedPath = localizedPath.replace(/\/+$/, '') || '/';
     }
     else {
-        //throw(error(404, "Page not found"));
-        // Page not found, but return the same path in the desired locale
-        correctPage = (inLocale == defaultLocale ? '' : `/${inLocale}`) + path;
-        correctPage = correctPage.replace(/\/+$/, '') || '/';
+        // Path not found, but return the same path in the desired locale
+        localizedPath = (inLocale == defaultLocale ? '' : `/${inLocale}`) + pathname;
+        localizedPath = localizedPath.replace(/\/+$/, '');
     }
 
-    return correctPage;
+    return localizedPath;
+}
+
+
+/***
+ * Returns locale as two letters
+ * and path with leading / but no trailing /
+ */
+export function getLocaleAndPathFromPathname(pathname: string): { locale: Locale, path: string } {
+    let locale: Locale;
+
+    // Split url pathname into tokens separated by /, discard any empty gorups
+    const parts = pathname.split('/').filter(Boolean);
+    let pageParts: string[];
+    // If the list is not empty, and the first element matches a locale.
+    if (parts.length > 0 && isLocale(parts[0])) {
+        // Then we found the locale part and the rest is the page-path
+        locale = parts[0];
+        pageParts = parts.slice(1);
+    } else {
+        // Otherwise, fallback to default locale and consider the whole pathname as page-path
+        locale = defaultLocale;
+        pageParts = parts;
+    }
+
+    // Reconstruct the path back into a valid pathname starting with a /
+    const path = '/' + pageParts.join('/');
+
+    return { locale, path };
 }

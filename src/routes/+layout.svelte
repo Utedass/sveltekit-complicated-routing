@@ -1,33 +1,36 @@
 <script lang="ts">
-	import favicon from "$lib/assets/favicon.svg";
-	import { type LayoutProps } from "./$types.js";
-	import { currentPath, pagesReverseLookup } from '$lib/content/routing.svelte.js';
+    import favicon from "$lib/assets/favicon.svg";
+    import { type LayoutProps } from "./$types.js";
+    import {
+        currentPath,
+        pagesReverseLookup,
+    } from "$lib/content/routing.svelte.js";
     import Header from "$lib/components/Header.svelte";
 
-	let { data, children }: LayoutProps = $props();
+    let { data, children }: LayoutProps = $props();
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+    <link rel="icon" href={favicon} />
 </svelte:head>
 
 <div class="debug">
-	<!-- Debugging info -->
-	<pre>
-		{JSON.stringify(data, null, 2)}
-		{JSON.stringify(pagesReverseLookup, null, 2)}
-		{JSON.stringify(currentPath.path, null, 2)}
+    <!-- Debugging info -->
+    <pre>
+{JSON.stringify(data, null, 2)}
+{JSON.stringify(currentPath.path, null, 2)}
+{JSON.stringify(pagesReverseLookup, null, 2)}
 		
 		Here comes the page la la la la
 	</pre>
-	<hr />
+    <hr />
 </div>
 
 <Header />
 {@render children()}
 
 <style>
-	.debug {
-		display: none;
-	}
+    .debug {
+        display: none;
+    }
 </style>
