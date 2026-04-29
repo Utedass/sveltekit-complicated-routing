@@ -1,4 +1,4 @@
-import { getLocaleAndPathFromPathname, getLocalizedLink, pagesReverseLookup, symlinks } from "$lib/content/routing.svelte";
+import { getLocaleAndPathFromPathname, pagesReverseLookup, symlinks } from "$lib/content/routing.svelte";
 import type { Reroute } from "@sveltejs/kit";
 
 export const reroute: Reroute = (event) => {
